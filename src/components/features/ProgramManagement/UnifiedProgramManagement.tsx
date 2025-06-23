@@ -1,0 +1,117 @@
+import React, { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { GraduationCap, BookOpen, Upload } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { ProgramManagementHeader } from "./ProgramManagementHeader";
+import { Program, ProgramManagementTabs } from "./ProgramManagementTabs";
+import { Button } from "@/components/ui/button";
+import { ProgramBuilder } from "./ProgramBuilder";
+
+interface UnifiedProgramManagementProps {
+  organizationId: string;
+}
+
+export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManagementProps) => {
+  const [showBuilder, setShowBuilder] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
+
+  const handleCreateProgram = () => {
+    setShowBuilder(true);
+  };
+
+  const handleProgramSelect = (program: Program) => {
+    setSelectedProgram(program);
+    setActiveTab('academic-structure');
+    // if (onProgramSelect) {
+    //   onProgramSelect(program); // Notify parent (UnifiedProgramManagement) of program selection
+    // }
+  };
+
+  const handleProgramUpdate = () => {
+    console.log('ProgramManagementDashboard: Program updated, reloading programs');
+    // loadPrograms();
+    setSelectedProgram(null);
+  };
+
+  if (showBuilder) {
+    return (
+      <div className="space-y-6">
+        <ProgramManagementHeader
+          title="Create New Program"
+          description="Build a complete academic program structure"
+          showCreateButton={false}
+          onCreateProgram={() => { }}
+        />
+        <ProgramBuilder
+          organizationId={organizationId!}
+          onComplete={() => {
+            setShowBuilder(false);
+            // Refresh programs list or update state as needed
+            console.log('Program created successfully');
+          }}
+        />
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-6">
+      <ProgramManagementHeader
+        title="Program Management"
+        description="Manage programs, courses, and upload syllabi in a single place"
+        showCreateButton={false}
+        onCreateProgram={handleCreateProgram}
+      />
+      <Tabs defaultValue="programs" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="programs" className="flex items-center gap-2">
+            <GraduationCap className="h-4 w-4" />
+            Programs
+          </TabsTrigger>
+          <TabsTrigger value="courses" className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4" />
+            Courses
+          </TabsTrigger>
+          <TabsTrigger value="syllabus" className="flex items-center gap-2">
+            <Upload className="h-4 w-4" />
+            Syllabus Upload
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="programs">
+          <div className="space-y-6">
+            <ProgramManagementHeader
+              onCreateProgram={handleCreateProgram}
+            />
+            <ProgramManagementTabs
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              programs={programs}
+              selectedProgram={selectedProgram}
+              onProgramSelect={handleProgramSelect}
+              onProgramUpdate={handleProgramUpdate}
+              onCreateProgram={handleCreateProgram}
+            />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="courses">
+          <Card className="mt-8">
+            <CardContent className="py-8 text-center text-gray-700">
+              Course list for selected program will appear here.
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="syllabus">
+          <Card className="mt-8">
+            <CardContent className="py-8 text-center text-gray-700">
+              Syllabus upload interface goes here.
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};
