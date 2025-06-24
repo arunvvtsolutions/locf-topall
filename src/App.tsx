@@ -10,6 +10,7 @@ import PrivateRoute from "./components/guards/PrivateRoute.tsx";
 import { AuthProvider } from "./components/auth/AuthProvider.tsx";
 import Login from "./pages/Login.tsx";
 import { UnifiedProgramManagement } from "./components/features/ProgramManagement/UnifiedProgramManagement.tsx";
+import ProgramOutComes from "./components/features/programOutcomes/ProgramOutComes.tsx";
 
 // Import all page components
 
@@ -42,10 +43,8 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="*" element={<NotFound />} />
-                    <Route
-                      path="/program-management"
-                      element={<UnifiedProgramManagement organizationId="1" />}
-                    />
+                    <Route path="/program-management" element={<UnifiedProgramManagement organizationId="1" />} />
+                    <Route path="/program-outcomes/:programId" element={<ProgramOutComes />} />
                   </Routes>
                 </AppLayout>
               </PrivateRoute>

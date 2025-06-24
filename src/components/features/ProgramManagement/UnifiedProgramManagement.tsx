@@ -8,25 +8,27 @@ import { Button } from "@/components/ui/button";
 import { ProgramBuilder } from "./ProgramBuilder";
 import { useGetProgramsQuery } from "@/api/api/program-management-api";
 import { useGetYearsListQuery } from "@/api/api/year";
+import { useNavigate } from "react-router-dom";
 
 interface UnifiedProgramManagementProps {
   organizationId: string;
 }
 
 interface IYearsSelectOptionProps {
-  value : string;
-  label : string;
+  value: string;
+  label: string;
 }
 export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManagementProps) => {
+   const navigate = useNavigate();
   const [showBuilder, setShowBuilder] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
   const [programs, setPrograms] = useState<Program[]>([]);
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
-  const { data: programsList, isLoading, error, } = useGetProgramsQuery();
-  const {data: yearsList} = useGetYearsListQuery();
+  const { data: programsList, isLoading, error } = useGetProgramsQuery();
+  const { data: yearsList } = useGetYearsListQuery();
   const [yearsSelectOption, setYearsSelectOption] = useState<IYearsSelectOptionProps[]>([]);
   console.log(yearsList);
-  
+
   useEffect(() => {
     if (yearsList) {
       const options = yearsList.map((year) => ({
@@ -38,18 +40,16 @@ export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManag
   }, [yearsList]);
 
   console.log(yearsSelectOption);
-  
 
   if (isLoading) return <p>Loading programs...</p>;
   if (error) return <p>Error loading programs!</p>;
 
-  console.log("programsList",programsList);
-  
-  
+  console.log("programsList", programsList);
+
   const handleProgramCreated = () => {
     setShowBuilder(false);
     // Refresh programs list or update state as needed
-    console.log('Program created successfully');
+    console.log("Program created successfully");
   };
 
   const handleCreateProgram = () => {
@@ -58,14 +58,15 @@ export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManag
 
   const handleProgramSelect = (program: Program) => {
     setSelectedProgram(program);
-    setActiveTab('academic-structure');
+    setActiveTab("academic-structure");
     // if (onProgramSelect) {
     //   onProgramSelect(program); // Notify parent (UnifiedProgramManagement) of program selection
     // }
+    navigate(`/program-outcomes/${program.id}`);
   };
 
   const handleProgramUpdate = () => {
-    console.log('ProgramManagementDashboard: Program updated, reloading programs');
+    console.log("ProgramManagementDashboard: Program updated, reloading programs");
     // loadPrograms();
     setSelectedProgram(null);
   };
@@ -77,7 +78,7 @@ export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManag
           title="Create New Program"
           description="Build a complete academic program structure"
           showCreateButton={false}
-          onCreateProgram={() => { }}
+          onCreateProgram={() => {}}
         />
         {showBuilder && (
           <ProgramBuilder
@@ -115,9 +116,7 @@ export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManag
 
         <TabsContent value="programs">
           <div className="space-y-6">
-            <ProgramManagementHeader
-              onCreateProgram={handleCreateProgram}
-            />
+            <ProgramManagementHeader onCreateProgram={handleCreateProgram} />
             <ProgramManagementTabs
               activeTab={activeTab}
               setActiveTab={setActiveTab}
@@ -140,9 +139,7 @@ export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManag
 
         <TabsContent value="syllabus">
           <Card className="mt-8">
-            <CardContent className="py-8 text-center text-gray-700">
-              Syllabus upload interface goes here.
-            </CardContent>
+            <CardContent className="py-8 text-center text-gray-700">Syllabus upload interface goes here.</CardContent>
           </Card>
         </TabsContent>
       </Tabs>
