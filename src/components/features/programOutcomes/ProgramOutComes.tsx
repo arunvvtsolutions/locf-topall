@@ -22,18 +22,20 @@ import { useCreateProgramOutcomeMutation, useGetProgramOutComesByIdQuery } from 
 
 const ProgramOutComes = () => {
   const { programId } = useParams<{ programId: string }>();
-  const { data: outcomes = [], isLoading, error, refetch } = useGetProgramOutComesByIdQuery(programId || "");
+  const {
+    data: outcomes = [],
+    isLoading,
+    error,
+    refetch,
+  } = useGetProgramOutComesByIdQuery(programId!, {
+    skip: !programId, // 🚀 Key Fix
+  });
   const [createProgramOutcome, { isLoading: isCreating }] = useCreateProgramOutcomeMutation();
 
   const navigate = useNavigate();
   const [isOutcomeDialogOpen, setIsOutcomeDialogOpen] = useState(false);
   const [outcomeFormData, setOutcomeFormData] = useState({ code: "", description: "" });
 
-  // STATIC DATA (toggle content to test)
-  //   const outcomes = [
-  //     // { code: "PO1", description: "Apply knowledge of mathematics, science, and engineering fundamentals." },
-  //     // { code: "PO2", description: "Design and analyze software systems to meet desired needs." },
-  //   ];
   const courses = [
     // { code: "CS101", name: "Introduction to Programming", credits: 4, instructor: "John Doe" },
     // { code: "CS201", name: "Data Structures", credits: 4, instructor: "Jane Smith" },
