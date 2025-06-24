@@ -5,19 +5,26 @@ import { Stepper } from '@/components/ui/stepper';
 import { useToast } from '@/hooks/use-toast';
 import { ProgramDetailsStep } from './components/ProgramDetailsStep';
 import { StructurePreviewStep } from './components/StructurePreviewStep';
+import { useCreateCompleteProgramMutation } from '@/api/api/program-management-api';
+interface IYearsSelectOptionProps {
+  value: string;
+  label: string;
+}
 
 interface ProgramBuilderProps {
   organizationId: string;
   onComplete?: () => void;
+  yearsSelectOption: IYearsSelectOptionProps[];
 }
 
 interface ProgramData {
   name: string;
   code: string;
-  program_type: 'undergraduate' | 'postgraduate' | 'diploma' | 'certificate' | 'doctoral';
+  programType: 'undergraduate' | 'postgraduate' | 'diploma' | 'certificate' | 'doctoral';
   durationYears: number;
   totalSemesters: number;
   description?: string;
+  academic_year_id: string;
 }
 
 interface SemesterStructure {
@@ -31,18 +38,19 @@ interface YearStructure {
   semesters: SemesterStructure[];
 }
 
-export const ProgramBuilder = ({ organizationId, onComplete }: ProgramBuilderProps) => {
+export const ProgramBuilder = ({ organizationId, onComplete, yearsSelectOption }: ProgramBuilderProps) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [createCompleteProgram, { isLoading: isCreating }] = useCreateCompleteProgramMutation();
   const [programData, setProgramData] = useState<ProgramData>({
     name: '',
     code: '',
-    program_type: 'undergraduate',
+    programType: 'undergraduate',
     durationYears: 4,
     totalSemesters: 8,
-    description: ''
+    description: '',
+    academic_year_id: ''
   });
   const [yearStructures, setYearStructures] = useState<YearStructure[]>([]);
-  const [isCreating, setIsCreating] = useState(false);
 
   const { toast } = useToast();
 
@@ -105,83 +113,74 @@ export const ProgramBuilder = ({ organizationId, onComplete }: ProgramBuilderPro
   };
 
   // Mock function to create a program - replace with actual API call
-  const createCompleteProgram = async (
-    orgId: string,
-    data: ProgramData,
-    duration: number
-  ) => {
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('Creating program:', { orgId, data, duration });
-        resolve({ success: true, programId: 'prog_' + Math.random().toString(36).substr(2, 9) });
-      }, 1000);
+  // const createCompleteProgram = async (
+  //   orgId: string,
+  //   data: ProgramData,
+  //   duration: number
+  // ) => {
+  //   // Simulate API call
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => {
+  //       console.log('Creating program:', { orgId, data, duration });
+  //       resolve({ success: true, programId: 'prog_' + Math.random().toString(36).substr(2, 9) });
+  //     }, 1000);
+  //   });
+  // };
+
+ const handleCreateProgram = async () => {
+  if (!organizationId) {
+    toast({
+      title: "Error",
+      description: "No organization selected",
+      variant: "destructive"
     });
-  };
+    return;
+  }
 
-  const handleCreateProgram = async () => {
-    console.group('=== Program Creation Started ===');
-    console.log('Organization ID:', organizationId);
-    console.log('Program Data:', programData);
-    console.log('Year Structures:', yearStructures);
-    console.groupEnd();
+  if (!programData.name || !programData.code) {
+    toast({
+      title: "Error",
+      description: "Please fill in all required fields",
+      variant: "destructive"
+    });
+    return;
+  }
+
+  try {
+    const result = await createCompleteProgram({
+      organizationId,
+      code: programData.code,
+      name: programData.name,
+      description: programData.description,
+      totalSemesters: programData.totalSemesters,
+      programType: programData.programType,
+      status: 'active',
+      durationYears: programData.durationYears,
+      academic_year_id: Number(programData.academic_year_id)
+    }).unwrap();
+
+
+    console.log('Program created successfully:', result);
     
-    if (!organizationId) {
-      toast({
-        title: "Error",
-        description: "No organization selected",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!programData.name || !programData.code) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsCreating(true);
+    toast({
+      title: "Success!",
+      description: `Program "${programData.name}" has been created successfully.`,
+      variant: "default"
+    });
     
-    try {
-      const result = await createCompleteProgram(
-        organizationId,
-        programData,
-        programData.durationYears
-      );
-      
-      console.log('ProgramBuilder: Program creation result:', result);
-      
-      toast({
-        title: "Success!",
-        description: `Program "${programData.name}" has been created successfully.`,
-        variant: "default"
-      });
-      
-      // Go to success step
-      setCurrentStep(3);
-      
-      // Call the onComplete callback if provided
-      if (onComplete) {
-        onComplete();
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('ProgramBuilder: Failed to create program:', error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create program. Please try again.",
-        variant: "destructive"
-      });
-      throw error;
-    } finally {
-      setIsCreating(false);
-    }
-  };
+    setCurrentStep(3);
+    onComplete?.();
+    return result;
+  } catch (error) {
+    console.error('Failed to create program:', error);
+    toast({
+      title: "Error",
+      description: error instanceof Error ? error.message : "Failed to create program. Please try again.",
+      variant: "destructive"
+    });
+    throw error;
+  }
+};
 
   const canProceed = () => {
     if (currentStep === 0) {
@@ -208,6 +207,7 @@ export const ProgramBuilder = ({ organizationId, onComplete }: ProgramBuilderPro
           <ProgramDetailsStep
             programData={programData}
             onProgramDataChange={handleProgramDataChange}
+            yearsSelectOption={yearsSelectOption}
           />
         );
       case 1:
@@ -230,12 +230,13 @@ export const ProgramBuilder = ({ organizationId, onComplete }: ProgramBuilderPro
                   <div className="space-y-1 text-blue-800">
                     <p><strong>Name:</strong> {programData.name}</p>
                     <p><strong>Code:</strong> {programData.code}</p>
-                    <p><strong>Type:</strong> {programData.program_type}</p>
+                    <p><strong>Type:</strong> {programData.programType}</p>
                     <p><strong>Duration:</strong> {programData.durationYears} years</p>
                     <p><strong>Total Semesters:</strong> {programData.totalSemesters}</p>
                     {programData.description && (
                       <p><strong>Description:</strong> {programData.description}</p>
                     )}
+                    <p><strong>Academic Year:</strong> {programData.academic_year_id}</p>
                   </div>
                 </div>
                 <Button 

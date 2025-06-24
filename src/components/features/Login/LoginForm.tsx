@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { useLoginMutation } from "@/features/auth/authApi";
+import { useLoginMutation } from "@/api/auth/authApi";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()

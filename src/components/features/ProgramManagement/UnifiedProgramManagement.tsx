@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { GraduationCap, BookOpen, Upload } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,16 +6,51 @@ import { ProgramManagementHeader } from "./ProgramManagementHeader";
 import { Program, ProgramManagementTabs } from "./ProgramManagementTabs";
 import { Button } from "@/components/ui/button";
 import { ProgramBuilder } from "./ProgramBuilder";
+import { useGetProgramsQuery } from "@/api/api/program-management-api";
+import { useGetYearsListQuery } from "@/api/api/year";
 
 interface UnifiedProgramManagementProps {
   organizationId: string;
 }
 
+interface IYearsSelectOptionProps {
+  value : string;
+  label : string;
+}
 export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManagementProps) => {
   const [showBuilder, setShowBuilder] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [programs, setPrograms] = useState<Program[]>([]);
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
+  const { data: programsList, isLoading, error, } = useGetProgramsQuery();
+  const {data: yearsList} = useGetYearsListQuery();
+  const [yearsSelectOption, setYearsSelectOption] = useState<IYearsSelectOptionProps[]>([]);
+  console.log(yearsList);
+  
+  useEffect(() => {
+    if (yearsList) {
+      const options = yearsList.map((year) => ({
+        value: year.id.toString(),
+        label: year.year,
+      }));
+      setYearsSelectOption(options);
+    }
+  }, [yearsList]);
+
+  console.log(yearsSelectOption);
+  
+
+  if (isLoading) return <p>Loading programs...</p>;
+  if (error) return <p>Error loading programs!</p>;
+
+  console.log("programsList",programsList);
+  
+  
+  const handleProgramCreated = () => {
+    setShowBuilder(false);
+    // Refresh programs list or update state as needed
+    console.log('Program created successfully');
+  };
 
   const handleCreateProgram = () => {
     setShowBuilder(true);
@@ -44,14 +79,13 @@ export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManag
           showCreateButton={false}
           onCreateProgram={() => { }}
         />
-        <ProgramBuilder
-          organizationId={organizationId!}
-          onComplete={() => {
-            setShowBuilder(false);
-            // Refresh programs list or update state as needed
-            console.log('Program created successfully');
-          }}
-        />
+        {showBuilder && (
+          <ProgramBuilder
+            organizationId={organizationId}
+            onComplete={handleProgramCreated}
+            yearsSelectOption={yearsSelectOption}
+          />
+        )}
       </div>
     );
   }
@@ -87,7 +121,7 @@ export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManag
             <ProgramManagementTabs
               activeTab={activeTab}
               setActiveTab={setActiveTab}
-              programs={programs}
+              programs={programsList || []}
               selectedProgram={selectedProgram}
               onProgramSelect={handleProgramSelect}
               onProgramUpdate={handleProgramUpdate}

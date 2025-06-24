@@ -79,7 +79,7 @@ export const createTestCourse = async (organization_id: string, overrides?: Part
       name: `Test Program ${Date.now()}`,
       code: `TP${Date.now().toString().slice(-4)}`,
       organization_id,
-      program_type: 'undergraduate',
+      programType: 'undergraduate',
       duration_years: 4,
       total_semesters: 8
     })

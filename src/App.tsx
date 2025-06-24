@@ -32,7 +32,6 @@ const App = () => (
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<h1>world</h1>} />
-          
 
           {/* Protected Routes */}
           <Route
@@ -44,9 +43,9 @@ const App = () => (
                     <Route path="/" element={<Index />} />
                     <Route path="*" element={<NotFound />} />
                     <Route
-            path="/program-management"
-            element={<UnifiedProgramManagement />}
-          />
+                      path="/program-management"
+                      element={<UnifiedProgramManagement organizationId="1" />}
+                    />
                   </Routes>
                 </AppLayout>
               </PrivateRoute>

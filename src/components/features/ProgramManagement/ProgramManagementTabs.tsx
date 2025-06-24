@@ -5,12 +5,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 // Removed: import { AcademicStructure } from './AcademicStructure';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
+import { ProgramList } from './ProgramList';
 export interface Program {
   id: string;
   name: string;
   code: string;
   duration_years: number;
-  program_type: string;
+  programType: string;
   description?: string;
   organization_id: string;
   is_active: boolean;
@@ -51,7 +52,11 @@ export const ProgramManagementTabs = ({
           */}
         </TabsList>
         <TabsContent value="overview">
-          <h1>program list</h1>
+         <ProgramList
+            programs={programs}
+            onProgramSelect={onProgramSelect}
+            onProgramUpdate={onProgramUpdate}
+          />
         </TabsContent>
         {/* Removed missing tab and components */}
       </Tabs>

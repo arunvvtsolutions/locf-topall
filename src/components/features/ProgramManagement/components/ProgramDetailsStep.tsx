@@ -5,21 +5,28 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+interface IYearsSelectOptionProps {
+  value: string;
+  label: string;
+}
+
 interface ProgramData {
   name: string;
   code: string;
-  program_type: 'undergraduate' | 'postgraduate' | 'diploma' | 'certificate' | 'doctoral';
+  programType: 'undergraduate' | 'postgraduate' | 'diploma' | 'certificate' | 'doctoral';
   durationYears: number;
   totalSemesters: number;
   description?: string;
+  academic_year_id: string;
 }
 
 interface ProgramDetailsStepProps {
   programData: ProgramData;
   onProgramDataChange: (data: Partial<ProgramData>) => void;
+  yearsSelectOption: IYearsSelectOptionProps[];
 }
 
-export const ProgramDetailsStep = ({ programData, onProgramDataChange }: ProgramDetailsStepProps) => {
+export const ProgramDetailsStep = ({ programData, onProgramDataChange, yearsSelectOption }: ProgramDetailsStepProps) => {
   return (
     <Card>
       <CardHeader>
@@ -53,8 +60,8 @@ export const ProgramDetailsStep = ({ programData, onProgramDataChange }: Program
         <div>
           <Label htmlFor="program-type">Program Type *</Label>
           <Select 
-            value={programData.program_type} 
-            onValueChange={(value: any) => onProgramDataChange({ program_type: value })}
+            value={programData.programType} 
+            onValueChange={(value: any) => onProgramDataChange({ programType: value })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select program type" />
@@ -93,6 +100,24 @@ export const ProgramDetailsStep = ({ programData, onProgramDataChange }: Program
               onChange={(e) => onProgramDataChange({ totalSemesters: parseInt(e.target.value) || 8 })}
             />
           </div>
+        </div>
+
+        <div>
+          <Label htmlFor="academic-year">Academic Year *</Label>
+          <select
+            id="academic-year"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            value={programData.academic_year_id}
+            onChange={(e) => onProgramDataChange({ academic_year_id: e.target.value })}
+            required
+          >
+            <option value="">Select Academic Year</option>
+            {yearsSelectOption.map((year) => (
+              <option key={year.value} value={year.value}>
+                {year.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

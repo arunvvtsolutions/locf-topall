@@ -242,21 +242,21 @@ export const DemoDataGenerator = () => {
         {
           name: 'Computer Science Engineering',
           code: 'CSE',
-          program_type: 'undergraduate' as const,
+          programType: 'undergraduate' as const,
           duration_years: 4,
           total_semesters: 8
         },
         {
           name: 'Mechanical Engineering',
           code: 'ME',
-          program_type: 'undergraduate' as const,
+          programType: 'undergraduate' as const,
           duration_years: 4,
           total_semesters: 8
         },
         {
           name: 'Electronics & Communication',
           code: 'ECE',
-          program_type: 'undergraduate' as const,
+          programType: 'undergraduate' as const,
           duration_years: 4,
           total_semesters: 8
         }

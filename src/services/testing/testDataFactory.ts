@@ -80,7 +80,7 @@ export class TestDataFactory {
         name: `Test Program ${Date.now()}`,
         code: `TP${Date.now().toString().slice(-4)}`,
         organization_id: organizationId,
-        program_type: 'undergraduate' as const,
+        programType: 'undergraduate' as const,
         duration_years: 4,
         total_semesters: 8
       })

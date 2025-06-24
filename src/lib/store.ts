@@ -1,20 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { emptySplitApi } from '@/features/api/apiSlice';
-import { authApi } from '@/features/auth/authApi';
+import { authApi } from '@/api/auth/authApi';
+import { apiSlice } from '@/api/api/apiSlice';
 
 // Create the Redux store with the API slice and any other reducers
 export const store = configureStore({
   reducer: {
     // Add the generated reducers as specific top-level slices
-    [emptySplitApi.reducerPath]: emptySplitApi.reducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
     [authApi.reducerPath]: authApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling, and other useful features
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(emptySplitApi.middleware),
+      .concat(apiSlice.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 });
 

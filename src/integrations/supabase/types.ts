@@ -1796,7 +1796,7 @@ export type Database = {
           is_system_template: boolean | null
           name: string
           organization_id: string | null
-          program_type: string
+          programType: string
           template_data: Json
           template_type: string | null
           updated_at: string | null
@@ -1812,7 +1812,7 @@ export type Database = {
           is_system_template?: boolean | null
           name: string
           organization_id?: string | null
-          program_type: string
+          programType: string
           template_data?: Json
           template_type?: string | null
           updated_at?: string | null
@@ -1828,7 +1828,7 @@ export type Database = {
           is_system_template?: boolean | null
           name?: string
           organization_id?: string | null
-          program_type?: string
+          programType?: string
           template_data?: Json
           template_type?: string | null
           updated_at?: string | null
@@ -3541,7 +3541,7 @@ export type Database = {
           id: string
           name: string
           organization_id: string
-          program_type: Database["public"]["Enums"]["program_type"]
+          programType: Database["public"]["Enums"]["programType"]
           status: Database["public"]["Enums"]["program_status"] | null
           total_semesters: number
           updated_at: string | null
@@ -3556,7 +3556,7 @@ export type Database = {
           id?: string
           name: string
           organization_id: string
-          program_type: Database["public"]["Enums"]["program_type"]
+          programType: Database["public"]["Enums"]["programType"]
           status?: Database["public"]["Enums"]["program_status"] | null
           total_semesters?: number
           updated_at?: string | null
@@ -3571,7 +3571,7 @@ export type Database = {
           id?: string
           name?: string
           organization_id?: string
-          program_type?: Database["public"]["Enums"]["program_type"]
+          programType?: Database["public"]["Enums"]["programType"]
           status?: Database["public"]["Enums"]["program_status"] | null
           total_semesters?: number
           updated_at?: string | null
@@ -5218,7 +5218,7 @@ export type Database = {
         | "refunded"
         | "partially_paid"
       program_status: "active" | "inactive" | "discontinued"
-      program_type:
+      programType:
         | "undergraduate"
         | "postgraduate"
         | "diploma"
@@ -5468,7 +5468,7 @@ export const Constants = {
         "partially_paid",
       ],
       program_status: ["active", "inactive", "discontinued"],
-      program_type: [
+      programType: [
         "undergraduate",
         "postgraduate",
         "diploma",
