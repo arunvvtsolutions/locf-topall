@@ -26,16 +26,16 @@ interface ProgramManagementHeaderProps {
 
 export const ProgramManagementHeader = ({
   onCreateProgram,
-  title = "Program Management",
-  description = "Manage academic programs and their structure",
+  title = "",
+  description = "",
   showCreateButton = true,
 }: ProgramManagementHeaderProps) => {
   return (
-    <div className="flex justify-end items-center">
-      {/* <div>
+    <div className="flex justify-between items-center">
+      <div>
         <h1 className="text-3xl font-bold">{title}</h1>
         {description && <p className="text-gray-600 mt-1">{description}</p>}
-      </div> */}
+      </div>
       {showCreateButton && (
         <Button onClick={onCreateProgram}>
           <Plus className="h-4 w-4 mr-2" />
