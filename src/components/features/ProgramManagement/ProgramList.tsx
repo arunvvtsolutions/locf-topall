@@ -1,18 +1,17 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { MoreHorizontal, Edit, Trash2, Eye, Search, GraduationCap } from 'lucide-react';
+import React, { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { MoreHorizontal, Edit, Trash2, Eye, Search, GraduationCap } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { format } from 'date-fns';
-import { Program } from './ProgramManagementTabs';
+} from "@/components/ui/dropdown-menu";
+import { format } from "date-fns";
+import { Program } from "./ProgramManagementTabs";
 
 interface ProgramListProps {
   programs: Program[];
@@ -21,31 +20,32 @@ interface ProgramListProps {
 }
 
 export const ProgramList = ({ programs, onProgramSelect, onProgramUpdate }: ProgramListProps) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredPrograms = programs.filter(program =>
-    program.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    program.code.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPrograms = programs.filter(
+    (program) =>
+      program.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      program.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getProgramTypeColor = (type: string) => {
     const colors = {
-      'undergraduate': 'bg-blue-100 text-blue-800',
-      'postgraduate': 'bg-purple-100 text-purple-800',
-      'diploma': 'bg-green-100 text-green-800',
-      'certificate': 'bg-orange-100 text-orange-800',
-      'doctoral': 'bg-red-100 text-red-800'
+      undergraduate: "bg-blue-100 text-blue-800",
+      postgraduate: "bg-purple-100 text-purple-800",
+      diploma: "bg-green-100 text-green-800",
+      certificate: "bg-orange-100 text-orange-800",
+      doctoral: "bg-red-100 text-red-800",
     };
-    return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[type as keyof typeof colors] || "bg-gray-100 text-gray-800";
   };
 
   const getStatusColor = (status: string) => {
     const colors = {
-      'active': 'bg-green-100 text-green-800',
-      'inactive': 'bg-gray-100 text-gray-800',
-      'discontinued': 'bg-red-100 text-red-800'
+      active: "bg-green-100 text-green-800",
+      inactive: "bg-gray-100 text-gray-800",
+      discontinued: "bg-red-100 text-red-800",
     };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800";
   };
 
   if (programs.length === 0) {
@@ -61,9 +61,9 @@ export const ProgramList = ({ programs, onProgramSelect, onProgramUpdate }: Prog
   }
 
   return (
-    <div className="space-y-4">
+    <div className="">
       {/* Search */}
-      <div className="flex items-center space-x-2">
+      {/* <div className="flex items-center space-x-2">
         <Search className="h-4 w-4 text-gray-400" />
         <Input
           placeholder="Search programs..."
@@ -71,7 +71,7 @@ export const ProgramList = ({ programs, onProgramSelect, onProgramUpdate }: Prog
           onChange={(e) => setSearchTerm(e.target.value)}
           className="max-w-sm"
         />
-      </div>
+      </div> */}
 
       {/* Programs Grid */}
       <div className="grid gap-4">
@@ -82,12 +82,8 @@ export const ProgramList = ({ programs, onProgramSelect, onProgramUpdate }: Prog
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="text-lg font-semibold text-gray-900">{program.name}</h3>
-                    <Badge className={getProgramTypeColor(program.programType)}>
-                      {program.programType}
-                    </Badge>
-                    <Badge className={getStatusColor(program.status || 'active')}>
-                      {program.status || 'active'}
-                    </Badge>
+                    <Badge className={getProgramTypeColor(program.programType)}>{program.programType}</Badge>
+                    <Badge className={getStatusColor(program.status || "active")}>{program.status || "active"}</Badge>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                     <span className="font-medium">{program.code}</span>
@@ -98,27 +94,20 @@ export const ProgramList = ({ programs, onProgramSelect, onProgramUpdate }: Prog
                     <p className="text-sm text-gray-700 mb-3 line-clamp-2">{program.description}</p>
                   )}
                   <div className="text-xs text-gray-500 mt-2">
-                    Created: {program.created_at ? format(new Date(program.created_at), 'dd MMM yyyy') : 'Date unavailable'}
+                    Created:{" "}
+                    {program.created_at ? format(new Date(program.created_at), "dd MMM yyyy") : "Date unavailable"}
                   </div>
                   <div className="flex items-center gap-2">
-                    {program.accreditation_details && (
-                      <Badge variant="outline">
-                        Accredited
-                      </Badge>
-                    )}
+                    {program.accreditation_details && <Badge variant="outline">Accredited</Badge>}
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onProgramSelect(program)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => onProgramSelect(program)}>
                     <Eye className="h-4 w-4 mr-1" />
                     View
                   </Button>
-                  
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm">

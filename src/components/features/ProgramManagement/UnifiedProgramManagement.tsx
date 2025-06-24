@@ -115,7 +115,7 @@ export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManag
         </TabsList>
 
         <TabsContent value="programs">
-          <div className="space-y-6">
+          <div className="space-y-3">
             <ProgramManagementHeader onCreateProgram={handleCreateProgram} />
             <ProgramManagementTabs
               activeTab={activeTab}
