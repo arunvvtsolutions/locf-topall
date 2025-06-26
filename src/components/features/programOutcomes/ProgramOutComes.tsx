@@ -1,10 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Loader2, Plus, ArrowLeft, BookOpen, GraduationCap } from "lucide-react";
+import {
+  Loader2,
+  Plus,
+  ArrowLeft,
+  BookOpen,
+  GraduationCap,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -17,12 +29,21 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   useCreateProgramOutcomeMutation,
-  useGetCoursesByProgramIdQuery,
   useGetProgramOutComesByIdQuery,
+  useGetCoursesByProgramIdQuery
 } from "@/api/api/program-outcomes-api";
+import { useUploadSyllabusMutation } from "@/api/api/file-upload-api";
+import { toast } from "sonner";
 
 const ProgramOutComes = () => {
   const { programId } = useParams<{ programId: string }>();
@@ -45,7 +66,12 @@ const ProgramOutComes = () => {
 
   const navigate = useNavigate();
   const [isOutcomeDialogOpen, setIsOutcomeDialogOpen] = useState(false);
-  const [outcomeFormData, setOutcomeFormData] = useState({ code: "", description: "" });
+  const [outcomeFormData, setOutcomeFormData] = useState({
+    code: "",
+    description: "",
+  });
+  const [uploadSyllabus, { isLoading: isUploading }] =
+    useUploadSyllabusMutation();
 
   // const courses = [
   //   { code: "CS101", name: "Introduction to Programming", credits: 4, instructor: "John Doe" },
@@ -85,12 +111,15 @@ const ProgramOutComes = () => {
               Back to Programs
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Computer Science B.Tech</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Computer Science B.Tech
+              </h1>
               <div className="flex items-center gap-2 mt-1">
                 <Badge variant="secondary">2024-2028</Badge>
               </div>
               <p className="text-gray-600 mt-2">
-                This program focuses on the fundamentals of computer systems, software, and programming.
+                This program focuses on the fundamentals of computer systems,
+                software, and programming.
               </p>
             </div>
           </div>
@@ -100,6 +129,7 @@ const ProgramOutComes = () => {
           <TabsList>
             <TabsTrigger value="outcomes">Program Outcomes</TabsTrigger>
             <TabsTrigger value="courses">Courses</TabsTrigger>
+            <TabsTrigger value="syllabus">Syllabus</TabsTrigger>
           </TabsList>
 
           <TabsContent value="outcomes">
@@ -111,9 +141,14 @@ const ProgramOutComes = () => {
                       <GraduationCap className="h-5 w-5" />
                       Program Outcomes
                     </CardTitle>
-                    <CardDescription>Define the learning outcomes for this program</CardDescription>
+                    <CardDescription>
+                      Define the learning outcomes for this program
+                    </CardDescription>
                   </div>
-                  <Dialog open={isOutcomeDialogOpen} onOpenChange={setIsOutcomeDialogOpen}>
+                  <Dialog
+                    open={isOutcomeDialogOpen}
+                    onOpenChange={setIsOutcomeDialogOpen}
+                  >
                     <DialogTrigger asChild>
                       <Button>
                         <Plus className="h-4 w-4 mr-2" />
@@ -124,7 +159,9 @@ const ProgramOutComes = () => {
                       <form onSubmit={handleOutcomeSubmit}>
                         <DialogHeader>
                           <DialogTitle>Create Program Outcome</DialogTitle>
-                          <DialogDescription>Add a new learning outcome for this program.</DialogDescription>
+                          <DialogDescription>
+                            Add a new learning outcome for this program.
+                          </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                           <div className="grid gap-2">
@@ -132,7 +169,12 @@ const ProgramOutComes = () => {
                             <Input
                               id="code"
                               value={outcomeFormData.code}
-                              onChange={(e) => setOutcomeFormData({ ...outcomeFormData, code: e.target.value })}
+                              onChange={(e) =>
+                                setOutcomeFormData({
+                                  ...outcomeFormData,
+                                  code: e.target.value,
+                                })
+                              }
                               required
                               placeholder="e.g., PO1"
                             />
@@ -142,14 +184,23 @@ const ProgramOutComes = () => {
                             <Textarea
                               id="description"
                               value={outcomeFormData.description}
-                              onChange={(e) => setOutcomeFormData({ ...outcomeFormData, description: e.target.value })}
+                              onChange={(e) =>
+                                setOutcomeFormData({
+                                  ...outcomeFormData,
+                                  description: e.target.value,
+                                })
+                              }
                               required
                               placeholder="Describe the outcome..."
                             />
                           </div>
                         </div>
                         <DialogFooter>
-                          <Button type="button" variant="outline" onClick={() => setIsOutcomeDialogOpen(false)}>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setIsOutcomeDialogOpen(false)}
+                          >
                             Cancel
                           </Button>
                           <Button type="submit">Create Outcome</Button>
@@ -171,7 +222,9 @@ const ProgramOutComes = () => {
                     <TableBody>
                       {outcomes.map((item, index) => (
                         <TableRow key={index}>
-                          <TableCell className="font-medium">{item.code}</TableCell>
+                          <TableCell className="font-medium">
+                            {item.code}
+                          </TableCell>
                           <TableCell>{item.description}</TableCell>
                         </TableRow>
                       ))}
@@ -180,8 +233,12 @@ const ProgramOutComes = () => {
                 ) : (
                   <div className="text-center py-8">
                     <GraduationCap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Program Outcomes</h3>
-                    <p className="text-gray-600 mb-4">Start by adding the first outcome.</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      No Program Outcomes
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      Start by adding the first outcome.
+                    </p>
                     <Button onClick={() => setIsOutcomeDialogOpen(true)}>
                       <Plus className="h-4 w-4 mr-2" />
                       Add First Outcome
@@ -201,7 +258,9 @@ const ProgramOutComes = () => {
                       <BookOpen className="h-5 w-5" />
                       Courses
                     </CardTitle>
-                    <CardDescription>Courses offered under this program</CardDescription>
+                    <CardDescription>
+                      Courses offered under this program
+                    </CardDescription>
                   </div>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
@@ -223,7 +282,9 @@ const ProgramOutComes = () => {
                     <TableBody>
                       {courses.map((course, index) => (
                         <TableRow key={index}>
-                          <TableCell className="font-medium">{course.code}</TableCell>
+                          <TableCell className="font-medium">
+                            {course.code}
+                          </TableCell>
                           <TableCell>{course.name}</TableCell>
                           <TableCell>{course.credits}</TableCell>
                           <TableCell>
@@ -238,14 +299,91 @@ const ProgramOutComes = () => {
                 ) : (
                   <div className="text-center py-8">
                     <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Courses</h3>
-                    <p className="text-gray-600 mb-4">Start by adding courses to this program.</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      No Courses
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      Start by adding courses to this program.
+                    </p>
                     <Button>
                       <Plus className="h-4 w-4 mr-2" />
                       Add First Course
                     </Button>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="syllabus">
+            <Card>
+              <CardHeader>
+                <CardTitle>Syllabus Upload</CardTitle>
+                <CardDescription>
+                  Upload the program syllabus in PDF format
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <Input
+                      id="syllabus"
+                      type="file"
+                      accept=".pdf"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          // Handle file selection
+                          console.log("Selected file:", file.name);
+                        }
+                      }}
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Only PDF files are accepted (Max size: 5MB)
+                    </p>
+                  </div>
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      className="bg-blue-600 hover:bg-blue-700"
+                      onClick={async () => {
+                        const fileInput = document.getElementById(
+                          "syllabus"
+                        ) as HTMLInputElement;
+                        const file = fileInput.files?.[0];
+
+                        if (!file) {
+                          toast.error("Please select a file");
+                          return;
+                        }
+
+                        try {
+                          const formData = new FormData();
+                          formData.append("file", file);
+                          formData.append("organization_id", "1");
+                          formData.append("program_id", "1");
+                          formData.append("uuid", "asdasdas943242343");
+
+                          console.log("formData", formData);
+
+                          const response = await uploadSyllabus(
+                            formData
+                          ).unwrap();
+                          console.log("response", response);
+
+                          toast.success("Syllabus uploaded successfully!");
+                          fileInput.value = ""; // Reset file input
+                        } catch (error) {
+                          console.error("Error uploading file:", error);
+                          toast.error(
+                            "Failed to upload syllabus. Please try again."
+                          );
+                        }
+                      }}
+                    >
+                      Upload Syllabus
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
