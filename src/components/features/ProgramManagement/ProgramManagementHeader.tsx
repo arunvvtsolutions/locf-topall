@@ -1,24 +1,23 @@
-
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 interface ProgramManagementHeaderProps {
   /**
    * Callback when the Create Program button is clicked
    */
   onCreateProgram: () => void;
-  
+
   /**
    * Optional title to display
    */
   title?: string;
-  
+
   /**
    * Optional description to display
    */
   description?: string;
-  
+
   /**
    * Optional flag to show/hide the create button
    */
@@ -27,9 +26,9 @@ interface ProgramManagementHeaderProps {
 
 export const ProgramManagementHeader = ({
   onCreateProgram,
-  title = 'Program Management',
-  description = 'Manage academic programs and their structure',
-  showCreateButton = true
+  title = "",
+  description = "",
+  showCreateButton = true,
 }: ProgramManagementHeaderProps) => {
   return (
     <div className="flex justify-between items-center">

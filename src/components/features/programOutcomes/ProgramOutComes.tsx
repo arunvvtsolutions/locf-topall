@@ -40,6 +40,7 @@ import {
 import {
   useCreateProgramOutcomeMutation,
   useGetProgramOutComesByIdQuery,
+  useGetCoursesByProgramIdQuery
 } from "@/api/api/program-outcomes-api";
 import { useUploadSyllabusMutation } from "@/api/api/file-upload-api";
 import { toast } from "sonner";
@@ -51,9 +52,17 @@ const ProgramOutComes = () => {
     isLoading,
     error,
     refetch,
-  } = useGetProgramOutComesByIdQuery(programId || "");
-  const [createProgramOutcome, { isLoading: isCreating }] =
-    useCreateProgramOutcomeMutation();
+  } = useGetProgramOutComesByIdQuery(programId!, {
+    skip: !programId, // 🚀 Key Fix
+  });
+  const {
+    data: courses = [],
+    isLoading: isCoursesLoading,
+    error: courseError,
+  } = useGetCoursesByProgramIdQuery(programId!, {
+    skip: !programId,
+  });
+  const [createProgramOutcome, { isLoading: isCreating }] = useCreateProgramOutcomeMutation();
 
   const navigate = useNavigate();
   const [isOutcomeDialogOpen, setIsOutcomeDialogOpen] = useState(false);
@@ -64,15 +73,10 @@ const ProgramOutComes = () => {
   const [uploadSyllabus, { isLoading: isUploading }] =
     useUploadSyllabusMutation();
 
-  // STATIC DATA (toggle content to test)
-  //   const outcomes = [
-  //     // { code: "PO1", description: "Apply knowledge of mathematics, science, and engineering fundamentals." },
-  //     // { code: "PO2", description: "Design and analyze software systems to meet desired needs." },
-  //   ];
-  const courses = [
-    // { code: "CS101", name: "Introduction to Programming", credits: 4, instructor: "John Doe" },
-    // { code: "CS201", name: "Data Structures", credits: 4, instructor: "Jane Smith" },
-  ];
+  // const courses = [
+  //   { code: "CS101", name: "Introduction to Programming", credits: 4, instructor: "John Doe" },
+  //   { code: "CS201", name: "Data Structures", credits: 4, instructor: "Jane Smith" },
+  // ];
 
   const handleOutcomeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,7 +106,7 @@ const ProgramOutComes = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate("/programs")}>
+            <Button variant="ghost" onClick={() => navigate("/program-management")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Programs
             </Button>
@@ -272,7 +276,6 @@ const ProgramOutComes = () => {
                         <TableHead>Code</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Credits</TableHead>
-                        <TableHead>Instructor</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -284,9 +287,8 @@ const ProgramOutComes = () => {
                           </TableCell>
                           <TableCell>{course.name}</TableCell>
                           <TableCell>{course.credits}</TableCell>
-                          <TableCell>{course.instructor}</TableCell>
                           <TableCell>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" onClick={() => navigate(`/courses/${course.id}`)}>
                               View Details
                             </Button>
                           </TableCell>
