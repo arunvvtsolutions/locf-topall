@@ -18,7 +18,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useCreateProgramOutcomeMutation, useGetProgramOutComesByIdQuery } from "@/api/api/program-outcomes-api";
+import {
+  useCreateProgramOutcomeMutation,
+  useGetCoursesByProgramIdQuery,
+  useGetProgramOutComesByIdQuery,
+} from "@/api/api/program-outcomes-api";
 
 const ProgramOutComes = () => {
   const { programId } = useParams<{ programId: string }>();
@@ -30,16 +34,23 @@ const ProgramOutComes = () => {
   } = useGetProgramOutComesByIdQuery(programId!, {
     skip: !programId, // 🚀 Key Fix
   });
+  const {
+    data: courses = [],
+    isLoading: isCoursesLoading,
+    error: courseError,
+  } = useGetCoursesByProgramIdQuery(programId!, {
+    skip: !programId,
+  });
   const [createProgramOutcome, { isLoading: isCreating }] = useCreateProgramOutcomeMutation();
 
   const navigate = useNavigate();
   const [isOutcomeDialogOpen, setIsOutcomeDialogOpen] = useState(false);
   const [outcomeFormData, setOutcomeFormData] = useState({ code: "", description: "" });
 
-  const courses = [
-    // { code: "CS101", name: "Introduction to Programming", credits: 4, instructor: "John Doe" },
-    // { code: "CS201", name: "Data Structures", credits: 4, instructor: "Jane Smith" },
-  ];
+  // const courses = [
+  //   { code: "CS101", name: "Introduction to Programming", credits: 4, instructor: "John Doe" },
+  //   { code: "CS201", name: "Data Structures", credits: 4, instructor: "Jane Smith" },
+  // ];
 
   const handleOutcomeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -206,7 +217,6 @@ const ProgramOutComes = () => {
                         <TableHead>Code</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Credits</TableHead>
-                        <TableHead>Instructor</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -216,9 +226,8 @@ const ProgramOutComes = () => {
                           <TableCell className="font-medium">{course.code}</TableCell>
                           <TableCell>{course.name}</TableCell>
                           <TableCell>{course.credits}</TableCell>
-                          <TableCell>{course.instructor}</TableCell>
                           <TableCell>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" onClick={() => navigate(`/courses/${course.id}`)}>
                               View Details
                             </Button>
                           </TableCell>

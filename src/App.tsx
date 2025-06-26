@@ -11,6 +11,7 @@ import { AuthProvider } from "./components/auth/AuthProvider.tsx";
 import Login from "./pages/Login.tsx";
 import { UnifiedProgramManagement } from "./components/features/ProgramManagement/UnifiedProgramManagement.tsx";
 import ProgramOutComes from "./components/features/programOutcomes/ProgramOutComes.tsx";
+import CourseDetails from "./components/features/CourseDetails/CourseDetails.tsx";
 
 // Import all page components
 
@@ -45,6 +46,7 @@ const App = () => (
                     <Route path="*" element={<NotFound />} />
                     <Route path="/program-management" element={<UnifiedProgramManagement organizationId="1" />} />
                     <Route path="/program-outcomes/:programId" element={<ProgramOutComes />} />
+                    <Route path="/courses/:id" element={<CourseDetails />} />
                   </Routes>
                 </AppLayout>
               </PrivateRoute>
