@@ -14,7 +14,7 @@ export const apiSlice = createApi({
     },
   }),
   // Common tag types can be defined here
-  tagTypes: ["Program", "Course"],
+  tagTypes: ["Program", "Course", "Syllabus"],
   // No endpoints defined here - they'll be injected by other slices
   endpoints: () => ({}),
 });

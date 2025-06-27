@@ -5,7 +5,7 @@ export interface Program {
   id: string;
   name: string;
   code: string;
-  duration_years: number;
+  durationYears: number;
   programType: string;
   description?: string;
   organization_id: string;
@@ -13,7 +13,7 @@ export interface Program {
   created_at: string;
   updated_at: string;
   status?: string;
-  total_semesters?: number;
+  totalSemesters?: number;
   accreditation_details?: any;
 }
 

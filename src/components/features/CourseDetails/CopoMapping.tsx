@@ -30,7 +30,7 @@ const CoPOMapping: React.FC<CoPOMappingProps> = ({ courseId }) => {
           <CopoMappingInterfaceSection data={CopoMappingInterface} />
         </TabsContent>
         <TabsContent value="matrix">
-          <CoPOMappingMatrix  data={CopoMappingInterface}  />
+          <CoPOMappingMatrix data={CopoMappingInterface} />
         </TabsContent>
         <TabsContent value="validation">validation Section</TabsContent>
       </Tabs>

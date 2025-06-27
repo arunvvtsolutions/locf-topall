@@ -104,14 +104,14 @@ export const UnifiedProgramManagement = ({ organizationId }: UnifiedProgramManag
             <GraduationCap className="h-4 w-4" />
             Programs
           </TabsTrigger>
-          <TabsTrigger value="courses" className="flex items-center gap-2">
+          {/* <TabsTrigger value="courses" className="flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
             Courses
           </TabsTrigger>
           <TabsTrigger value="syllabus" className="flex items-center gap-2">
             <Upload className="h-4 w-4" />
             Syllabus Upload
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="programs">
